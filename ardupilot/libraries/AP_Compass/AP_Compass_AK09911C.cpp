@@ -1,3 +1,7 @@
+/*
+TYSM to https://github.com/mjx4mois/AK09911/tree/master
+*/
+
 #include "AP_Compass_AK09911C.h"
 
 #if AP_COMPASS_AK09911C_ENABLED
@@ -97,12 +101,12 @@ bool AP_Compass_AK09911C::init()
     
     hal.scheduler->delay(2);
 
-    // 4. Check Device ID (NOW we check ID)
+    // Check Device ID (NOW we check ID)
     if (!_check_id()) {
         return false;
     }
 
-    // 5. Read ASA (Sensitivity Adjustment)
+    // Read ASA (Sensitivity Adjustment)
     if (!_read_asa()) {
         GCS_SEND_TEXT(MAV_SEVERITY_WARNING, "AK09911C: ASA read failed");
         return false;
