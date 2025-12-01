@@ -1,0 +1,426 @@
+# hw definition file for GEPRCF405 based on MatekF405-TE
+
+# Betaflight Target: GEPRCF405
+
+# Manufacturer ID: GEPR
+
+APJ_BOARD_ID AP_HW_MatekF405_TE
+
+define HAL_USB_VENDOR_NAME "GEPRC"
+define HAL_USB_PRODUCT_NAME "GEPRC-F405"
+define AP_CUSTOM_FIRMWARE_STRING "GEPRCF405_HD"
+
+# MCU class and specific type
+
+MCU STM32F4xx STM32F405xx
+
+# bootloader starts firmware at 64k
+
+FLASH_RESERVE_START_KB 64
+
+FLASH_SIZE_KB 1024
+
+# store parameters in pages 11
+
+#STORAGE_FLASH_PAGE 11
+
+#define HAL_STORAGE_SIZE 16384 #15360
+
+
+#define HAL_STORAGE_SIZE 16384
+
+#define STORAGE_FLASH_PAGE 1
+
+define HAL_STORAGE_SIZE 15360
+
+define HAL_I2C_DEBUG 1
+define HAL_COMPASS_DEBUG 1
+define HAL_DEBUG_BUILD 1
+
+STORAGE_FLASH_PAGE 1
+
+#define HAL_STORAGE_ON_SPIFLASH 1
+
+#define HAL_STORAGE_SIZE 32768
+
+
+#define HAL_BOOTLOADER_ENABLED 1
+
+
+define STM32_ST_USE_TIMER 5
+
+define CH_CFG_ST_RESOLUTION 32
+
+
+define USE_ACC
+define USE_ACC_SPI_ICM42688P
+define USE_GYRO
+define USE_GYRO_SPI_ICM42688P
+define USE_COMPASS
+
+# crystal frequency (matches BF dump: system_hse_mhz = 8)
+
+OSCILLATOR_HZ 8000000
+
+# --------------------- LED -----------------------
+
+# GEPRC: resource LED 1 C14, resource LED 2 C15
+
+define AP_NOTIFY_GPIO_LED_2_ENABLED 1
+
+PC14 LED0 OUTPUT LOW GPIO(90) # GEPRC: LED 1 -> Internal GPIO 90
+
+PC15 LED1 OUTPUT LOW GPIO(91) # GEPRC: LED 2 -> Internal GPIO 91
+
+define HAL_GPIO_A_LED_PIN 91  # Green/B/E LED uses GPIO 91
+
+define HAL_GPIO_B_LED_PIN 90  # Blue/ACT LED uses GPIO 90
+
+
+# --------------------- PWM Outputs (Motors/Servos) -----------------------
+PA9  TIM1_CH2  TIM1 PWM(1) GPIO(50) BIDIR
+PA10 TIM1_CH3  TIM1 PWM(2) GPIO(51) BIDIR
+PA8  TIM1_CH1  TIM1 PWM(3) GPIO(52) BIDIR
+PC8  TIM8_CH3  TIM8 PWM(4) GPIO(53) BIDIR
+
+#PC9  TIM8_CH4  TIM8 PWM(5) GPIO(54)
+#PB0  TIM3_CH3  TIM3 PWM(6) GPIO(55) NODMA
+#PB1  TIM3_CH4  TIM3 PWM(7) GPIO(56) NODMA
+
+define SERVO_BLH_OTYPE 6
+
+# --------------------- LED Strip ---------------------
+
+# Note: PB1 (GPIO 56) is shared with MOTOR 7.
+
+# Commenting out default NeoPixel defines. User must set SERVO7_FUNCTION=-1 to use NeoPixel.
+
+# define HAL_NEOPIXEL_COUNT 16
+
+# define HAL_NEOPIXEL1_PIN 56
+
+
+# --------------------- Beeper -----------------------
+
+# GEPRC: resource BEEPER 1 C13
+
+PC13 BUZZER OUTPUT GPIO(80) LOW     # GEPRC: Beeper pin -> Internal GPIO 80
+
+define HAL_BUZZER_PIN 80
+
+
+
+# --------------------- PINIO ------------------------
+
+# GEPRC: resource PINIO 1 A13, resource PINIO 2 A14
+
+PA13 PINIO1 OUTPUT GPIO(81) LOW # Internal GPIO 81
+
+PA14 PINIO2 OUTPUT GPIO(82) LOW # Internal GPIO 82
+
+
+# --------------------- SPI1 (OSD) -----------------------
+
+# GEPRC: resource SPI_SCK 1 A05, SPI_MISO 1 A06, SPI_MOSI 1 A07
+
+# GEPRC: resource OSD_CS 1 A04, set max7456_spi_bus = 1
+
+#PA5 SPI1_SCK SPI1
+
+#PA6 SPI1_MISO SPI1
+
+#PA7 SPI1_MOSI SPI1
+
+#PA4 OSD_CS   CS   # GEPRC: OSD Chip Select
+
+
+
+# --------------------- SPI2 (Flash) -----------------------
+
+# GEPRC: resource SPI_SCK 2 B13, SPI_MISO 2 B14, SPI_MOSI 2 B15
+
+# GEPRC: resource FLASH_CS 1 B12, set flash_spi_bus = 2
+
+PB13 SPI2_SCK   SPI2 
+
+PB14 SPI2_MISO  SPI2 
+
+PB15 SPI2_MOSI  SPI2 
+
+PB12 FLASH_CS   CS 
+
+# -------------------- I2C bus --------------------
+
+# GEPRC: resource I2C_SCL 1 B08, I2C_SDA 1 B09 (Bus 1 - Mag)
+
+# GEPRC: resource I2C_SCL 2 B10, I2C_SDA 2 B11 (Bus 2 - Baro)
+
+define STM32_I2C_USE_I2C1 TRUE
+define STM32_I2C_USE_I2C2 TRUE
+
+define HAL_I2C_MAX_CLOCK 100000
+
+I2C_ORDER I2C2 I2C1  # Define Bus 2 first (index 0), Bus 1 second (index 1)
+
+# I2C Bus 1 (External/Default) - Mapped to index 1
+
+PB8 I2C1_SCL I2C1 #PB8
+
+PB9 I2C1_SDA I2C1 #PB9
+
+
+# I2C Bus 2 (Internal Sensors) - Mapped to index 0
+
+PB10 I2C2_SCL I2C2
+
+PB11 I2C2_SDA I2C2
+
+
+define HAL_I2C_INTERNAL_MASK 1 # Bitmask (1 << 0) indicates Bus 2 (index 0) is internal
+
+
+# --------------------- UARTs ---------------------------
+
+# GEPRC Order based on pins and resources
+
+SERIAL_ORDER OTG1 USART1 USART2 USART3 UART4 UART5
+
+
+# OTG1 (USB)
+
+PA11 OTG_FS_DM OTG1
+
+PA12 OTG_FS_DP OTG1
+
+
+# USART1 (Serial 1) - GEPRC: SERIAL_TX 1 B06, SERIAL_RX 1 B07
+
+PB6  USART1_TX USART1
+
+PB7  USART1_RX USART1
+
+
+# USART2 (Serial 2) - GEPRC: SERIAL_TX 2 A02, SERIAL_RX 2 A03
+
+PA2  USART2_TX USART2 NODMA
+
+PA3  USART2_RX USART2 NODMA
+
+
+# USART3 (Serial 3) - GEPRC: SERIAL_TX 3 C10, SERIAL_RX 3 C11
+
+PC10 USART3_TX USART3 NODMA
+
+PC11 USART3_RX USART3 NODMA
+
+
+# UART4 (Serial 4) - GEPRC: SERIAL_TX 4 A00, SERIAL_RX 4 A01
+
+PA0  UART4_TX  UART4 NODMA
+
+PA1  UART4_RX  UART4 NODMA
+
+
+# UART5 (Serial 5) - GEPRC: SERIAL_TX 5 C12, SERIAL_RX 5 D02
+
+PC12 UART5_TX  UART5 NODMA
+
+PD2  UART5_RX  UART5 NODMA
+
+
+# USART6 disabled it is occupied by compass
+#
+#PC6  USART6_TX USART6
+
+#PC7  USART6_RX USART6 NODMA PULLDOWN # GEPRC: SBUS default likely uses RX6 (PC7)
+
+#define RCINPUT_SERIAL_PORT 6 # Default RC Input on Serial 6 (USART6 RX)
+
+
+
+# --------------------- SPI3 (IMU) -----------------------
+
+# GEPRC: resource SPI_SCK 3 B03, SPI_MISO 3 B04, SPI_MOSI 3 B05
+
+# GEPRC: resource GYRO_CS 1 A15, resource GYRO_EXTI 1 C03, set gyro_1_spibus = 3
+
+PB3 SPI3_SCK  SPI3
+PB4 SPI3_MISO SPI3
+PB5 SPI3_MOSI SPI3
+PA15 IMU_CS   CS
+PC3  IMU_DRDY INPUT
+define HAL_IMU_DRDY_PIN_PIN PC3
+
+
+# ------------------- IMU ICM42688P ---------------------
+
+# GEPRC: Uses SPI Bus 3, CS=A15, EXTI=C03
+
+SPIDEV icm42688  SPI3  DEVID1  IMU_CS  MODE3  24*MHZ  24*MHZ
+IMU Invensensev3 SPI:icm42688 ROTATION_ROLL_180_YAW_270
+
+define HAL_DEFAULT_INS_FAST_SAMPLE 3   # Bitmask: 0x3 = enable on first two IMUs
+define INS_MAX_HARMONIC_NOTCHES 8      # Support multiple motor harmonics
+
+define HAL_IMU_TEMP_CAL_ENABLE 0       # Disable temp cal that can cause resets
+define HAL_IMU_DUAL_SAMPLE 1            # Enable dual sampling for glitch resistance
+define INS_VIBRATION_CHECK_INSTANCES 2 # Monitor vibration on primary IMUs
+
+define HAL_INS_DEFAULT_FAST_SAMPLE 2
+
+
+# ------------------- DMA assignment -------------------
+
+# I2C1 DMA configuration (External I2C bus) - CORRECTED
+define STM32_I2C_USE_I2C1 TRUE
+define STM32_I2C_I2C1_RX_DMA_STREAM  STM32_DMA_STREAM_ID(1, 5)  # Must be Stream 5 (not 0)
+define STM32_I2C_I2C1_TX_DMA_STREAM  STM32_DMA_STREAM_ID(1, 6)  # Must be Stream 6
+define STM32_I2C_I2C1_RX_DMA_MSK     STM32_DMA_STREAM_ID_MSK(1, 5)
+define STM32_I2C_I2C1_TX_DMA_MSK     STM32_DMA_STREAM_ID_MSK(1, 6)
+define STM32_I2C_I2C1_RX_DMA_CHN     1  # Channel 1
+define STM32_I2C_I2C1_TX_DMA_CHN     1  # Channel 1
+define STM32_I2C_I2C1_IRQ_PRIO       10
+
+# I2C2 DMA configuration (Internal I2C bus)
+define STM32_I2C_USE_I2C2 TRUE
+define STM32_I2C_I2C2_RX_DMA_STREAM  STM32_DMA_STREAM_ID(1, 2)  # Must be Stream 2 or 3
+define STM32_I2C_I2C2_TX_DMA_STREAM  STM32_DMA_STREAM_ID(1, 7)  # Must be Stream 7
+define STM32_I2C_I2C2_RX_DMA_MSK     STM32_DMA_STREAM_ID_MSK(1, 2)
+define STM32_I2C_I2C2_TX_DMA_MSK     STM32_DMA_STREAM_ID_MSK(1, 7)
+define STM32_I2C_I2C2_RX_DMA_CHN     7  # Channel 7
+define STM32_I2C_I2C2_TX_DMA_CHN     7  # Channel 7
+define STM32_I2C_I2C2_IRQ_PRIO       10
+
+# Standard DMA priorities
+DMA_PRIORITY ADC1 TIM1_UP TIM8_UP SPI2* SPI3* UART2* I2C1* I2C2*
+DMA_NOSHARE TIM1_UP TIM8_UP SPI3*
+
+
+# --------------------- FLASH ----------------------
+
+# GEPRC: Uses SPI Bus 2, CS=B12, Type W25Q128FV (16MB)
+
+SPIDEV dataflash SPI2 DEVID1 FLASH_CS      MODE3  8*MHZ 8*MHZ
+
+
+# ----------------- I2C compass & Baro -----------------
+
+undef HAL_COMPASS_MAX_SENSORS
+define HAL_COMPASS_MAX_SENSORS 3
+define AP_COMPASS_ENABLED 1
+define HAL_SKIP_AUTO_INTERNAL_I2C_PROBE 1
+define AP_COMPASS_AK09911C_ENABLED 1
+
+PC7 COMPASS_ENABLE OUTPUT HIGH
+
+COMPASS AK09911C I2C:1:0x0D ROTATION_NONE
+
+define AP_BARO_ENABLED 1
+
+define COMPASS_TYPEMASK 0 
+define COMPASS_EXTERN2 1
+
+define AP_BARO_DPS310_ENABLED 1
+
+BARO DPS310 I2C:0:0x76
+
+# --------------------- ADC ---------------------------
+
+# GEPRC: resource ADC_BATT 1 C01, ADC_CURR 1 C00, ADC_RSSI 1 C02
+
+PC1 BATT_VOLTAGE_SENS ADC1 SCALE(1) # GEPRC: C01 -> PC1 is ADC Ch 11
+
+PC0 BATT_CURRENT_SENS ADC1 SCALE(1) # GEPRC: C00 -> PC0 is ADC Ch 10
+
+PC2 RSSI_ADC_PIN      ADC1 SCALE(1) # GEPRC: C02 -> PC2 is ADC Ch 12
+
+
+define HAL_BATT_MONITOR_DEFAULT 4
+
+
+define HAL_BATT_VOLT_PIN 11 # ADC Channel number for PC1
+
+define HAL_BATT_VOLT_SCALE 11.0 # Default scale, requires calibration
+
+
+define HAL_BATT_CURR_PIN 10 # ADC Channel number for PC0
+
+define HAL_BATT_CURR_SCALE 17.9
+
+define BOARD_RSSI_ANA_PIN 12 # ADC Channel number for PC2
+
+# --------------------- USB Detect ----------------------
+
+# GEPRC: resource USB_DETECT 1 C04
+
+define BOARD_DETECT_PIN PC4 # Used by ChibiOS HAL, PC4 maps to internal GPIO 36
+
+
+# minimal drivers to reduce flash usage
+
+#include ../include/minimize_fpv_osd.inc
+
+# ------------------ OSD AT7456E ----------------------
+
+# GEPRC: Uses SPI Bus 1, CS=A04
+
+#SPIDEV osd       SPI1  DEVID2  OSD_CS  MODE0 10*MHZ 10*MHZ # GEPRC: SPI1, PA4 CS
+
+
+#OTHER
+
+define AP_RANGEFINDER_ENABLED 1
+
+define AP_RANGEFINDER_BENEWAKE_ENABLED 1
+
+undef AP_CAMERA_MOUNT_ENABLED
+
+undef HAL_MOUNT_ENABLED
+
+undef HAL_MOUNT_SERVO_ENABLED
+
+define HAL_PARACHUTE_ENABLED 0
+define HAL_RUNCAM_ENABLED 0
+define HAL_BUTTON_ENABLED 0
+
+define AP_CAMERA_MOUNT_ENABLED 1
+
+define HAL_MOUNT_ENABLED 1
+
+define AP_MOUNT_BACKEND_DEFAULT_ENABLED 0
+
+define HAL_MOUNT_SERVO_ENABLED 1
+
+define DEFAULT_NTF_LED_TYPES 257
+
+undef HAL_CRSF_TELEM_TEXT_SELECTION_ENABLED OSD_ENABLED && OSD_PARAM_ENABLED && HAL_CRSF_TELEM_ENABLED
+
+# enable logging to dataflash
+
+define HAL_LOGGING_DATAFLASH_ENABLED 1
+
+define HAL_LOGGING_DATAFLASH_DRIVER AP_Logger_Flash_JEDEC
+
+define HAL_LOGGING_FLASH_JEDEC_ENABLED 1
+
+
+define AP_BATTERY_ENABLED 1
+
+# Disable unused features permanently
+#define HAL_BARO_BMP280_I2C_ENABLE 0
+#define HAL_BARO_MS5611_I2C_ENABLE 0
+define HAL_WITH_UAVCAN 0
+define HAL_RCINPUT_WITH_AP_RADIO 0
+define HAL_GENERATE_FRSKY_TELEM 0
+define HAL_GENERATE_MAVLINK_THERMAL_TELEM 0
+
+# Reduce AHRS processing
+define AHRS_EKF_TYPE 2
+define EKF2_MULTI_IMU 0
+define EKF3_MULTI_IMU 0
+
+define BRD_SAFETY_DEFLT 0
+
+define HAL_BIDIRECTIONAL_DSHOT_ENABLED 1
+
+define AP_INERTIALSENSOR_HARMONICNOTCH_ENABLED 1
