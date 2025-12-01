@@ -1,14 +1,9 @@
 # hw definition file for GEPRCF405 based on MatekF405-TE
 
-# Betaflight Target: GEPRCF405
+APJ_BOARD_ID 0
 
-# Manufacturer ID: GEPR
-
-APJ_BOARD_ID AP_HW_MatekF405_TE
-
-define HAL_USB_VENDOR_NAME "GEPRC"
-define HAL_USB_PRODUCT_NAME "GEPRC-F405"
-define AP_CUSTOM_FIRMWARE_STRING "GEPRCF405_HD"
+undef HAL_USB_STRING_MANUFACTURER
+define HAL_USB_STRING_MANUFACTURER "GEPRC"
 
 # MCU class and specific type
 
@@ -20,16 +15,9 @@ FLASH_RESERVE_START_KB 64
 
 FLASH_SIZE_KB 1024
 
-# store parameters in pages 11
-
 #STORAGE_FLASH_PAGE 11
 
 #define HAL_STORAGE_SIZE 16384 #15360
-
-
-#define HAL_STORAGE_SIZE 16384
-
-#define STORAGE_FLASH_PAGE 1
 
 define HAL_STORAGE_SIZE 15360
 
@@ -43,14 +31,11 @@ STORAGE_FLASH_PAGE 1
 
 #define HAL_STORAGE_SIZE 32768
 
-
 #define HAL_BOOTLOADER_ENABLED 1
-
 
 define STM32_ST_USE_TIMER 5
 
 define CH_CFG_ST_RESOLUTION 32
-
 
 define USE_ACC
 define USE_ACC_SPI_ICM42688P
@@ -109,7 +94,6 @@ PC13 BUZZER OUTPUT GPIO(80) LOW     # GEPRC: Beeper pin -> Internal GPIO 80
 define HAL_BUZZER_PIN 80
 
 
-
 # --------------------- PINIO ------------------------
 
 # GEPRC: resource PINIO 1 A13, resource PINIO 2 A14
@@ -134,7 +118,6 @@ PA14 PINIO2 OUTPUT GPIO(82) LOW # Internal GPIO 82
 #PA4 OSD_CS   CS   # GEPRC: OSD Chip Select
 
 
-
 # --------------------- SPI2 (Flash) -----------------------
 
 # GEPRC: resource SPI_SCK 2 B13, SPI_MISO 2 B14, SPI_MOSI 2 B15
@@ -153,7 +136,7 @@ PB12 FLASH_CS   CS
 
 # GEPRC: resource I2C_SCL 1 B08, I2C_SDA 1 B09 (Bus 1 - Mag)
 
-# GEPRC: resource I2C_SCL 2 B10, I2C_SDA 2 B11 (Bus 2 - Baro)
+# GEPRC: resource I2C_SCL 2 B10, I2C_SDA 2 B11 (Bus 2 - Baro DPS310 ITS NOT BMP280)
 
 define STM32_I2C_USE_I2C1 TRUE
 define STM32_I2C_USE_I2C2 TRUE
@@ -229,14 +212,12 @@ PD2  UART5_RX  UART5 NODMA
 
 
 # USART6 disabled it is occupied by compass
-#
+
 #PC6  USART6_TX USART6
 
-#PC7  USART6_RX USART6 NODMA PULLDOWN # GEPRC: SBUS default likely uses RX6 (PC7)
+#PC7  USART6_RX USART6 NODMA PULLDOWN 
 
 #define RCINPUT_SERIAL_PORT 6 # Default RC Input on Serial 6 (USART6 RX)
-
-
 
 # --------------------- SPI3 (IMU) -----------------------
 
@@ -267,6 +248,7 @@ define HAL_IMU_DUAL_SAMPLE 1            # Enable dual sampling for glitch resist
 define INS_VIBRATION_CHECK_INSTANCES 2 # Monitor vibration on primary IMUs
 
 define HAL_INS_DEFAULT_FAST_SAMPLE 2
+define INS_GYRO_RATE 2 # 4kHZ preferred for stability and CPU consuption
 
 
 # ------------------- DMA assignment -------------------
@@ -300,7 +282,11 @@ DMA_NOSHARE TIM1_UP TIM8_UP SPI3*
 
 # GEPRC: Uses SPI Bus 2, CS=B12, Type W25Q128FV (16MB)
 
-SPIDEV dataflash SPI2 DEVID1 FLASH_CS      MODE3  8*MHZ 8*MHZ
+SPIDEV dataflash SPI2 DEVID1 FLASH_CS      MODE3  1*MHZ 1*MHZ
+
+define HAL_LOGGING_DATAFLASH_ENABLED 1
+define HAL_LOGGING_DATAFLASH_DRIVER AP_Logger_Flash_JEDEC
+define HAL_LOGGING_FLASH_JEDEC_ENABLED 1
 
 
 # ----------------- I2C compass & Baro -----------------
