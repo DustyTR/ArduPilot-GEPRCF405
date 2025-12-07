@@ -47,7 +47,7 @@ This reference project includes
 - GPS U-Blox M10N over [serial]
 - AK09911C magnetometer (compass) over [I2C]
 - Bluejay bidirectional esc communucation over [DSHOT300]
-- Simple telemetry over [Mavlink2] *(RC not included not in budget, thats why I customized this firmware 4 ardupilot)*
+- Simple telemetry over [Mavlink2] *(RC not included not in budget, thats why I customized this ardupilot 4 FC)*
 
 | Memory Section |	Start Address (Hex) |	Size |	Purpose |
 | - | - | - | - |
